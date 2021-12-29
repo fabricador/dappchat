@@ -3,21 +3,29 @@ DappChat, as its name suggests, is a chat dapp, where users can create their own
 demo page: https://fabricador.github.io/dappchat/
 
 # Methods
-### createChat: Passing the arguments of title, description and price, the user can create a new chat, so people can access it and start to participate
+### createChat: 
+Passing the arguments of title, description and price, the user can create a new chat, so people can access it and start to participate
 
-### getChat: Returns the data of a chat by his index
+### getChat: 
+Returns the data of a chat by his index
 
-### getChatsLength: Returns the number of chats
+### getChatsLength:
+Returns the number of chats
 
-### getMessage: Returns the message creator, and content by his index
+### getMessage: 
+Returns the message creator, and content by his index
 
-### getMessages: Returns the list of indexes of messages by the post index
+### getMessages: 
+Returns the list of indexes of messages by the post index
 
-### getMessagesLength: Return the number of messages created
+### getMessagesLength: 
+Return the number of messages created
 
-### joinChat: Adds the user to the list of participants and transfers the price to the owner of the chat
+### joinChat: 
+Adds the user to the list of participants and transfers the price to the owner of the chat
 
-### sendMessage: Adds a message to the map of messages, and also, adds the index of the message to the chat list of messages
+### sendMessage: 
+Adds a message to the map of messages, and also, adds the index of the message to the chat list of messages
 
 # Install
 
