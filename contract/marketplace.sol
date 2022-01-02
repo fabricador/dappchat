@@ -51,6 +51,17 @@ contract ChatGroups {
 
     mapping(uint256 => Message) internal messages;
 
+    modifier belongsInChat(uint chat_id){
+        bool yes = false;
+        for (uint i = 0; i < chats[chat_id].participants.length; i++)
+            if (msg.sender == chats[chat_id].participants[i]){
+                yes = true;
+                break;
+            }
+        
+        if (! yes) {revert();}
+        _;
+    }
     function createChat(
         string memory _title,
         string memory _description,
@@ -70,7 +81,7 @@ contract ChatGroups {
         chatsLength++;
     }
 
-    function sendMessage(uint256 _index, string memory _content) public {
+    function sendMessage(uint256 _index, string memory _content) belongsInChat(_index) public {
         chats[_index].messages.push(messagesLength);
         messages[messagesLength] = Message(msg.sender, _content);
         messagesLength++;
