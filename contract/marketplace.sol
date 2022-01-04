@@ -111,10 +111,13 @@ contract ChatGroups {
         view
         returns (address, string memory)
     {
+        require(messages[_index].creator != address(0), "This message does not exist" );
         return (messages[_index].creator, messages[_index].content);
     }
 
     function joinChat(uint256 _index) public payable {
+
+        require(chats[_index].owner != address(0), "This chat does not exist" );
         require(
             IERC20Token(cUsdTokenAddress).transferFrom(
                 msg.sender,

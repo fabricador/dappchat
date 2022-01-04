@@ -3,10 +3,8 @@ import { newKitFromWeb3 } from "@celo/contractkit"
 import BigNumber from "bignumber.js"
 import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
+import {MPContractAddress, ERC20_DECIMALS, cUSDContractAddress} from "./utils/constants";
 
-const ERC20_DECIMALS = 18
-const MPContractAddress = "0xc6Ad961570151f262029997d53E70c6B2B6599d7"
-const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 
 let kit
 let contract
@@ -39,23 +37,23 @@ const connectCeloWallet = async function () {
 async function approve(_price) {
   const cUSDContract = new kit.web3.eth.Contract(erc20Abi, cUSDContractAddress)
 
-  const result = await cUSDContract.methods
+  return await cUSDContract.methods
     .approve(MPContractAddress, _price)
     .send({ from: kit.defaultAccount })
-  return result
+
 }
 
 const getBalance = async function () {
   const totalBalance = await kit.getTotalBalance(kit.defaultAccount)
-  const cUSDBalance = totalBalance.cUSD.shiftedBy(-ERC20_DECIMALS).toFixed(2)
-  document.querySelector("#balance").textContent = cUSDBalance
+  document.querySelector("#balance").textContent = totalBalance.cUSD.shiftedBy(-ERC20_DECIMALS).toFixed(2)
+
 }
 
 const getChats = async function() {
   const _chatsLength = await contract.methods.getChatsLength().call()
   const _chats = []
   for (let i = 0; i < _chatsLength; i++) {
-    let _chat = new Promise(async (resolve, reject) => {
+    let _chat = new Promise(async (resolve) => {
       let c = await contract.methods.getChat(i).call()
       resolve({
         index: i,
@@ -112,7 +110,7 @@ async function getMessages() {
   let _messages = []
 
   for (let i of messagesIndexes) {
-    let _message = new Promise(async (resolve, reject) => {
+    let _message = new Promise(async (resolve) => {
       let m = await contract.methods.getMessage(i).call()
       resolve({
         index: i,
@@ -200,7 +198,7 @@ window.addEventListener("load", async () => {
 
 document
   .querySelector("#newChatBtn")
-  .addEventListener("click", async (e) => {
+  .addEventListener("click", async () => {
     const params = [
       document.getElementById("nameInput").value,
       document.getElementById("descriptionInput").value,
@@ -210,7 +208,7 @@ document
     ]
     notification(`⌛ Adding "${params[0]}"...`)
     try {
-      const result = await contract.methods
+       await contract.methods
         .createChat(...params)
         .send({ from: kit.defaultAccount })
     } catch (error) {
@@ -232,7 +230,7 @@ document.querySelector("#chatsList").addEventListener("click", async (e) => {
     }
     notification(`⌛ Awaiting payment for "${chats[index].title}"...`)
     try {
-      const result = await contract.methods
+      await contract.methods
         .joinChat(index)
         .send({ from: kit.defaultAccount })
       notification(`🎉 You successfully joined "${chats[index].title}".`)
@@ -249,14 +247,14 @@ document.querySelector("#chatsList").addEventListener("click", async (e) => {
   }
 })  
 
-document.getElementById("sendMessage").addEventListener("click", async (e) => {
+document.getElementById("sendMessage").addEventListener("click", async () => {
   const params = [
     chatId,
     document.getElementById("messageContent").value
   ]
   notification(`⌛ Sending message...`)
   try {
-    const result = await contract.methods
+    await contract.methods
       .sendMessage(...params)
       .send({ from: kit.defaultAccount })
   } catch (error) {
